@@ -1,21 +1,21 @@
-# from  flask import Flask
-#
-# app = Flask(__name__)
-#
-# @app.route("/")
-# def index():
-#     return "Hello MyProJect RMUTI!"
-#
-# if __name__ == "__main__":
-#     app.run()
-
-from flask import Flask, Response
+from  flask import Flask
 import cv2
 app = Flask(__name__)
-video = cv2.VideoCapture(0)
-@app.route('/')
+
+@app.route("/")
 def index():
-    return "Default Message"
+    return "Hello MyProJect RMUTI!"
+
+if __name__ == "__main__":
+    app.run()
+
+# from flask import Flask, Response
+# import cv2
+# app = Flask(__name__)
+video = cv2.VideoCapture(0)
+# @app.route('/')
+# def index():
+#     return "Default Message"
 # def gen(video):
 #     while True:
 #         success, image = video.read()
