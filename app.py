@@ -12,7 +12,7 @@ if __name__ == "__main__":
 # from flask import Flask, Response
 # import cv2
 # app = Flask(__name__)
-video = cv2.VideoCapture(0)
+# video = cv2.VideoCapture(0)
 # @app.route('/')
 # def index():
 #     return "Default Message"
@@ -28,5 +28,3 @@ video = cv2.VideoCapture(0)
 #     global video
 #     return Response(gen(video),
 #                     mimetype='multipart/x-mixed-replace; boundary=frame')
-if __name__ == "__main__":
-    app.run()
