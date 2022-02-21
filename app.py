@@ -4,7 +4,7 @@ import cv2
 app = Flask(__name__)
 
 print(cv2.getThreadNum())
-camera =  cv2.VideoCapture()
+camera =  cv2.VideoCapture(-2)
 # use 0 for web camera
 #  for cctv camera use rtsp://username:password@ip_address:554/user=username_password='password'_channel=channel_number_stream=0.sdp' instead of camera
 # for local webcam use cv2.VideoCapture(0)
@@ -30,7 +30,7 @@ def video_feed():
 
 @app.route('/')
 def index():
-    """Video streaming home page."""
+    print(cv2.getThreadNum())
     return render_template('index.html')
 
 
