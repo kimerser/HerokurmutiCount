@@ -1,18 +1,13 @@
 #Import necessary libraries
 from flask import Flask, render_template, Response
 import cv2
+import os
 #Initialize the Flask app
 app = Flask(__name__)
 
 
-all_camera_idx_available = []
-
-for camera_idx in range(100):
-    camera = cv2.VideoCapture(camera_idx)
-    if camera.isOpened():
-        print(f'Camera index available: {camera_idx}')
-        all_camera_idx_available.append(camera_idx)
-        camera.release()
+if os.environ.get('WERKZEUG_RUN_MAIN') or Flask.debug is False:
+    camera = cv2.VideoCapture(0)
 
 # camera = cv2.VideoCapture('rtsp://freja.hiof.no:1935/rtplive/_definst_/hessdalen03.stream')
 '''
@@ -40,4 +35,4 @@ def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,use_reloader=True)
