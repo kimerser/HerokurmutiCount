@@ -36,4 +36,4 @@ def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
-    app.run(debug=True,use_reloader=True)
+    app.run(host='0.0.0.0',debug=True,use_reloader=True)
