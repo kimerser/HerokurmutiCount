@@ -4,7 +4,7 @@ import cv2
 import os
 #Initialize the Flask app
 app = Flask(__name__)
-global camera
+camera = cv2.VideoCapture(0, cv2.CAP_V4L)
 
 #if os.environ.get('WERKZEUG_RUN_MAIN') or Flask.debug is False:
 #    camera = cv2.VideoCapture(0)
@@ -18,7 +18,7 @@ for local webcam use cv2.VideoCapture(0)
 def gen_frames():
     camera = cv2.VideoCapture(0)
     while True:
-        success, frame = camera.read()  # read the camera frame
+      #  success, frame = camera.read()  # read the camera frame
         if not success:
             break
         else:
