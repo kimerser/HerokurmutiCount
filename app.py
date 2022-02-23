@@ -6,8 +6,8 @@ import os
 app = Flask(__name__)
 global camera
 
-if os.environ.get('WERKZEUG_RUN_MAIN') or Flask.debug is False:
-    camera = cv2.VideoCapture(0)
+#if os.environ.get('WERKZEUG_RUN_MAIN') or Flask.debug is False:
+#    camera = cv2.VideoCapture(0)
 
 # camera = cv2.VideoCapture('rtsp://freja.hiof.no:1935/rtplive/_definst_/hessdalen03.stream')
 '''
@@ -16,6 +16,7 @@ for local webcam use cv2.VideoCapture(0)
 '''
 
 def gen_frames():
+    camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
