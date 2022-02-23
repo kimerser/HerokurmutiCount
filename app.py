@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 all_camera_idx_available = []
 
-for camera_idx in range(10):
+for camera_idx in range(100):
     camera = cv2.VideoCapture(camera_idx)
     if camera.isOpened():
         print(f'Camera index available: {camera_idx}')
