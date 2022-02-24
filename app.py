@@ -1,7 +1,7 @@
 from flask import Flask, Response
 import cv2
 app = Flask(__name__)
-video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(-1)
 @app.route('/')
 def index():
     return "Default Message"
