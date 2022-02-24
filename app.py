@@ -4,7 +4,7 @@ import cv2
 import os
 #Initialize the Flask app
 app = Flask(__name__)
-camera = cv2.VideoCapture(0, cv2.CAP_V4L)
+camera = cv2.VideoCapture("/dev/video1")
 
 #if os.environ.get('WERKZEUG_RUN_MAIN') or Flask.debug is False:
 #    camera = cv2.VideoCapture(0)
