@@ -16,7 +16,7 @@ for local webcam use cv2.VideoCapture(0)
 '''
 
 def gen_frames():
-    camera = cv2.VideoCapture(0)
+    #camera = cv2.VideoCapture(0)
     while True:
       #  success, frame = camera.read()  # read the camera frame
         if not success:
