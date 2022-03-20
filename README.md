@@ -1,4 +1,5 @@
-# Video streaming using Flask and OpenCV
+# mobilenetssd
+A web app for MobileNet SSD detection example hosted at https://mobilenetssd.herokuapp.com/
 
-Video streaming using Flask and OpenCV
+<img src="https://github.com/jideilori/jideilori.github.io/blob/master/img/mobilenetsddweb.png" width="780" height="550">
 
