@@ -14,10 +14,10 @@ app = Flask(__name__)
 #     password="3ddf4e897e1859e61bfffa3bf668acf9633c6dd82c7f03aec8308be5234ecf3e",
 #     database="d4pf0p93fbnod2"
 # )
-mydb = psycopg2.connect(database="d4pf0p93fbnod2"
-    , user="lkpgoucsyezcgn"
-    , password="3ddf4e897e1859e61bfffa3bf668acf9633c6dd82c7f03aec8308be5234ecf3e"
-    , host="ec2-3-224-125-117.compute-1.amazonaws.com"
+mydb = psycopg2.connect(database="d7gs7158vj1qqf"
+    , user="tdlprgyfdfqyaz"
+    , password="5fd1a43acec22dcfe5f1cbef4c338e4dda65d29f3fdcb378244969f85dc644ce"
+    , host="ec2-3-218-171-44.compute-1.amazonaws.com"
     , port="5432")
 mycursor = mydb.cursor()
 
