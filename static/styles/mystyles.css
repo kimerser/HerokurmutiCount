@@ -1,0 +1,22 @@
+img {
+  margin: 10px;
+  width: 80px;
+  margin-left: 65px;
+}
+
+#header{
+  background: #7a0000;
+  padding-left: 50px;
+  height: 180px;
+  padding-left: 20px;
+  margin-bottom: 30px;
+}
+
+#headerfont{
+  /* font-family: 'Kanit', sans-serif; */
+  font-size: 35px;
+  margin-top: 40px;
+  color: white;
+  text-align: center;
+  margin-left: 30px;
+}
