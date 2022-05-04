@@ -14,13 +14,12 @@ app = Flask(__name__)
 #     password="3ddf4e897e1859e61bfffa3bf668acf9633c6dd82c7f03aec8308be5234ecf3e",
 #     database="d4pf0p93fbnod2"
 # )
-mydb = psycopg2.connect(database="d7gs7158vj1qqf"
-    , user="tdlprgyfdfqyaz"
-    , password="5fd1a43acec22dcfe5f1cbef4c338e4dda65d29f3fdcb378244969f85dc644ce"
-    , host="ec2-3-218-171-44.compute-1.amazonaws.com"
+mydb = psycopg2.connect(database="d7s6m6ath6ve13"
+    , user="zgvqfwsigmwxmz"
+    , password="1165a95e7ba1d4c6455d6cab658649c2a5490c8fff39ab89d0be207935eb351c"
+    , host="ec2-44-195-169-163.compute-1.amazonaws.com"
     , port="5432")
 mycursor = mydb.cursor()
-
 
 @app.route("/")
 def index():
@@ -33,7 +32,7 @@ def index():
     mycursor.execute(sql)
     facsum = mycursor.fetchall()
 
-    sql = 'select p."timeDelay" ,p."left" ,p."right"  from "parameter" p'
+    sql = 'select p."timeDelay"  ,p.left ,p.right  from parameters p'
     mycursor.execute(sql)
     side = mycursor.fetchall()
     # print(rows)
@@ -58,7 +57,7 @@ def update():
 def left():
     left = request.form["left"]
     # sql = "UPDATE `parameter` SET `left`= %s"
-    sql = 'UPDATE "parameter" SET "left"= %s'
+    sql = 'UPDATE parameters SET "left"= %s'
     val = [left]
     mycursor.execute(sql, val)
     mydb.commit()
@@ -69,7 +68,7 @@ def left():
 def right():
     right = request.form["right"]
     # sql = "UPDATE `parameter` SET `right`= %s"
-    sql = 'UPDATE "parameter" SET "right"= %s'
+    sql = 'UPDATE parameters SET "right"= %s'
     val = [right]
     mycursor.execute(sql, val)
     mydb.commit()
@@ -80,7 +79,7 @@ def right():
 def delaytime():
     delaytime = request.form["delaytime"]
     # sql = "UPDATE `parameter` SET `timeDelay`= %s"
-    sql = 'UPDATE "parameter" SET "timeDelay"= %s'
+    sql = 'UPDATE parameters SET "timeDelay"= %s'
     val = [delaytime]
     mycursor.execute(sql, val)
     mydb.commit()
