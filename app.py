@@ -1,12 +1,11 @@
+from datetime import datetime
 from typing import Type
-# import mysql.connector
 from flask import Flask, render_template, redirect, request, url_for, Response, jsonify
-# import logging
-# import sys
-# import cv2
 import psycopg2
-app = Flask(__name__)
+import schedule
+import time
 
+app = Flask(__name__)
 
 # mydb = mysql.connector.connect(
 #     host="ec2-3-224-125-117.compute-1.amazonaws.com",
@@ -24,30 +23,81 @@ mycursor = mydb.cursor()
 @app.route("/")
 def index():
     # con=mydb.connection.cursor()
-    sql = "SELECT * FROM faculty order by fac_id "
+    # sql = "SELECT * FROM faculty order by fac_id "
+    sql = "select dc.fac_id ,f.fac_name,f.department,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id order by dc.count_id "
     mycursor.execute(sql)
     res = mycursor.fetchall()
+    sql = "select fac_id ,fac_name from faculty f order by fac_id "
+    mycursor.execute(sql)
+    facdetail = mycursor.fetchall()
     # print(res)
-    sql = "SELECT sum(num_of_graduates) FROM faculty"
+    sql = "SELECT sum(num_of_graduates) FROM date_counts dc"
     mycursor.execute(sql)
     facsum = mycursor.fetchall()
 
-    sql = 'select p."timeDelay"  ,p.left ,p.right  from parameters p'
+    sql = 'select p."timeDelay"  ,p.left ,p.right,p.timenotify  from parameters p'
     mycursor.execute(sql)
     side = mycursor.fetchall()
     # print(rows)
-    return render_template("index.html", datas=res, facsum=facsum, side=side)
+    return render_template("index.html", datas=res,facdetail=facdetail, datasert=res, facsum=facsum, side=side)
+
+@app.route("/configparamers")
+def configparamers():
+    sql = 'select p."timeDelay"  ,p.left ,p.right,p.timenotify,p.dateuse,p.range_count   from parameters p'
+    mycursor.execute(sql)
+    side = mycursor.fetchall()
+    print(side)
+    return render_template("admin.html", side=side)
+
+@app.route("/monitoring", methods=['GET'])
+def monitoring():
+    print(datetime.now())
+    now = datetime.now()
+    current_date = now.strftime("%Y-%m-%d")
+    print(current_date)
+    val = [current_date]
+    selectDate = "select cp.start_time ,cp.end_time from count_proc cp left join date_counts dc ON cp.count_id  =  dc.count_id  WHERE to_char(cp.start_time , 'YYYY-MM-DD')  =  %s   order by range_count desc LIMIT 1 "
+    mycursor.execute(selectDate,val)
+    selectDate = mycursor.fetchall()
+    for selectDate in selectDate:
+        # dateuse = datamonitor[0]
+        startTime = selectDate[0]
+        endTime = selectDate[1]
+    sql = "select dc.dateuse, sum(cp.current_person),sum(dc.num_of_graduates)  from count_proc cp inner join date_counts dc ON cp.count_id = dc.count_id where  to_char(cp.start_time , 'YYYY-MM-DD') =  %s  group by dc.dateuse"
+    mycursor.execute(sql,val)
+    datamonitor = mycursor.fetchall()
+    print(datamonitor)
+    for datamonitor in datamonitor:
+        # dateuse = datamonitor[0]
+        currentPerson = datamonitor[1]
+        numOfGraduates = datamonitor[2]
+
+    print(currentPerson , " currentPerson")
+    print(numOfGraduates , " numOfGraduates")
+    percen = (currentPerson/numOfGraduates) * 100 
+    percen = int(percen)
+    print(percen)
+    balance = numOfGraduates - currentPerson
+    return render_template("monitoring.html",percen = percen, currentPerson = currentPerson, balance = balance ,startTime=startTime , endTime =endTime)
+
+
+
 
 
 @ app.route('/update', methods=['POST'])
 def update():
+    print("update")
     facId = request.form["facId"]
-    Id = request.form["Id"]
-    fac = request.form["fac"]
-    department = request.form["department"]
+    countId = request.form["countId"]
+    # fac = request.form["fac"]
+    # department = request.form["department"]
     num = request.form["num"]
-    sql = "UPDATE faculty SET fac_id=%s,fac_name=%s,department=%s,num_of_graduates=%s WHERE fac_id = %s"
-    val = [facId, fac, department, num, Id]
+    dateuse = request.form["dateuse"]
+    range = request.form["range"]
+    dregree = request.form["dregree"]
+    sql = "UPDATE date_counts SET fac_id=%s, dateuse=%s, range_count=%s, degree_id=%s, num_of_graduates=%s WHERE count_id=%s"
+    val = [facId,dateuse,range,dregree, num, countId]
+    print(val)
     mycursor.execute(sql, val)
     mydb.commit()
     return redirect(url_for("index"))
@@ -56,12 +106,54 @@ def update():
 @ app.route("/update_left", methods=['GET', 'POST'])
 def left():
     left = request.form["left"]
-    # sql = "UPDATE `parameter` SET `left`= %s"
     sql = 'UPDATE parameters SET "left"= %s'
     val = [left]
     mycursor.execute(sql, val)
     mydb.commit()
     return redirect(url_for("index"))
+
+@ app.route("/update_dateuse", methods=['GET', 'POST'])
+def updateDateuse():
+    print("update_dateuse")
+    dateuse = request.form["dateuse"]
+    print(dateuse)
+    sql = 'UPDATE parameters SET dateuse= %s'
+    val = [dateuse]
+    mycursor.execute(sql, val)
+    mydb.commit()
+    return redirect(url_for("index"))
+
+
+@ app.route("/ ", methods=['GET', 'POST'])
+def find_fac():
+    print("index")
+        # con=mydb.connection.cursor()
+    # sql = "SELECT * FROM faculty  where dateuse=%s order by fac_id"
+    sql = "select dc.fac_id ,f.fac_name,f.department,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s and dc.range_count like %s order by dc.count_id "
+    dateuse = request.form["dateuse"]
+    range = request.form["range"]
+    val =[dateuse,range]
+    print(val)
+    mycursor.execute(sql,val)
+    res = mycursor.fetchall()
+
+    sql = "select fac_id ,fac_name from faculty f order by fac_id"
+    mycursor.execute(sql)
+    facdetail = mycursor.fetchall()
+
+    sql = "select dateuse from date_counts dc"
+    mycursor.execute(sql)
+    res2 = mycursor.fetchall()
+    # # print(res)
+    # sql = "SELECT sum(num_of_graduates) FROM faculty"
+    # mycursor.execute(sql)
+    # facsum = mycursor.fetchall()
+
+    # sql = 'select p."timeDelay"  ,p.left ,p.right  from parameters p'
+    # mycursor.execute(sql)
+    # side = mycursor.fetchall()
+    # # print(rows)
+    return render_template("index.html", datas=res,facdetail=facdetail,datasert=res)
 
 
 @ app.route("/update_right", methods=['GET', 'POST'])
@@ -86,16 +178,24 @@ def delaytime():
     return redirect(url_for("index"))
 
 
+
 @ app.route("/insert_fac", methods=['GET', 'POST'])
 def insert_fac():
     try:
         if request.method == "POST":
             facId = request.form["facId"]
             fac = request.form["fac"]
-            department = request.form["department"]
-            num = request.form["num"]
-            sql = "INSERT INTO faculty (fac_id, fac_name, department, num_of_graduates) VALUES (%s,%s,%s,%s)"
-            val = [facId, fac, department, num]
+            # department = request.form["department"]
+            # num = request.form["num"]
+            # dateuser = request.form["dateuser"]
+            # range = request.form["range"]
+            # dregree = request.form["dregree"]
+            # countNo = request.form["countNo"]
+            sql = "INSERT INTO faculty (fac_id, fac_name) VALUES (%s,%s)"
+            # sql = "INSERT INTO faculty (fac_id, fac_name, department, num_of_graduates, dateuse, range_count, degrees_id,count_no) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            val = [facId, fac]
+            # val = [facId, fac, department, num ,dateuser,range,dregree,countNo]
+            # print(val)    
             mycursor.execute(sql, val)
             mydb.commit()
             print(mycursor.rowcount, "record inserted.")
@@ -105,7 +205,67 @@ def insert_fac():
         return jsonify({'error': 'Missing data!'})
     return redirect(url_for("index"))
 
+@ app.route("/insert_count_no", methods=['GET', 'POST'])
+def insert_count_no():
+    try:
+        if request.method == "POST":
+            print("hi")
+            facId = request.form["facId"]
+            print(facId)
+            # fac = request.form["fac"]
+            # department = request.form["department"]
+            num = request.form["num"]
+            print(num)
+            dateuse = request.form["dateuse"]
+            print(dateuse)
+            range = request.form["range"]
+            print(range)
+            dregree = request.form["dregree"]
+            print(dregree)
+            countNo = request.form["countNo"]
+            print(countNo)
+            
 
+            sql = "INSERT INTO count_proc (fac_id, start_time, end_time, data_stamp, current_person, time_per_person) VALUES( NULL, NULL, NULL, NULL, NULL, NULL)"
+            mycursor.execute(sql)
+            mydb.commit()
+
+            sql = "(select  max(count_id)::text from count_proc cp)"
+            mycursor.execute(sql)
+            mydb.commit()
+            setcountid = mycursor.fetchall()
+            for getcountid in setcountid:
+                print(getcountid)
+                getcountid = setcountid[0]
+
+            sql = "INSERT INTO date_counts (fac_id, dateuse, range_count, count_id, degree_id, num_of_graduates) VALUES( %s, %s, %s, %s, %s, %s)"
+            # sql = "INSERT INTO faculty (fac_id, fac_name, department, num_of_graduates, dateuse, range_count, degrees_id,count_no) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            # val = [facId, fac]
+            val = [facId,dateuse, range, getcountid, dregree , num]
+            print("insert_count_no")
+            print(val)
+            print(sql)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            print(mycursor.rowcount, "record inserted.")
+        else:
+            print("NOT SUCCESS")
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Missing data!'})
+    return redirect(url_for("index"))
+
+# @ app.route("/testdate", methods=['GET', 'POST'])
+# def testdate():
+#     try:
+#         if request.method == "POST":
+#             datetestinput = request.form["datetestinput"]
+#             print(datetestinput)
+#         else:
+#             print("NOT SUCCESS")
+#     except Exception as e:
+#         return jsonify({'error': 'Missing data!'})
+#     return redirect(url_for("index"))
 # @ app.route('/process', methods=['POST'])
 # def process():
 
@@ -140,7 +300,7 @@ def insert_fac():
 
 @ app.route('/delete/<string:id_data>', methods=['GET'])
 def delelte(id_data):
-    mycursor.execute("DELETE FROM faculty WHERE  fac_id = " + (id_data))
+    mycursor.execute("DELETE FROM date_counts WHERE  count_id = " + (id_data))
     mydb.commit()
     return redirect(url_for("index"))
 
