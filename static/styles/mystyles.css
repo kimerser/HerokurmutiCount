@@ -28,6 +28,30 @@
   margin-left: 30px;
 }
 
+#moniteringfont{
+  /* font-family: 'Kanit', sans-serif; */
+  font-size: 35px;
+  margin-top: 40px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  margin-left: 30px;
+}
+
+#selectdate{
+  /* font-family: 'Kanit', sans-serif; */
+  font-size: 25px;
+  margin-top: 40px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  margin-left: 30px;
+}
+
+
 #insertfact{
+  width: 100px;
+}
+
+
+#btcf{
   width: 100px;
 }

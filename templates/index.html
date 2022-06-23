@@ -14,10 +14,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 </head>
 
 <body>
-
     <div class="container" id="header">
         <div class="row">
             <div class="col-sm-2">
@@ -30,77 +33,84 @@
         </div>
 
     </div>
-
-    <!-- <center>
-        <br>
-        <br>
-        <p class="fs-1">แก้ไขข้อมูลเริ่มต้น</p>
-    </center> -->
-    <!-- {% block conntent %}
-    {% endblock %} -->
-    <!-- <div class="container">
-        <form action="" method="post">
-            <div class="row">
-                <div class="col-sm">
-                    <label for="">ตั้งค่าเวลา</label>
-                    <input type="text" name="Time" id="Time">
-                </div>
-                <div class="col-sm">
-                    <label for="">เลื่อนซ้าย</label>
-                    <input type="text" name="left" id="left">
-                </div>
-                <div class="col-sm">
-                    <label for="">เลื่อนขวา</label>
-                    <input type="text" name="right" id="right">
-                </div>
-                <div class="col-sm">
-                    <button type="submit">
-                        Save
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div> -->
-
-    <!-- <br>
-    <br> -->
     <div class="container" style="background: #fff9f7; padding-top: 20px; padding-left: 20px;">
         <div class="row">
             <div class="col-sm-6">
                 <div class="row">
-                    <!-- <h3 class="mt-5">Live Streaming</h3> -->
-                    <!-- <div class="col-sm-5"> -->
-                    <!-- <img src="" width="100%">
-                        <form method="post" action="">
-                            <input class="btn btn-secondary" type="submit" value="Start/Stop" name="stop" />
-                            <input class="btn btn-secondary" type="submit" value="camera" name="camera" />
-                        </form> -->
-                    <!-- </div> -->
-
-                    <form action="{{url_for('insert_fac')}}" method="POST">
-                        <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">ลำดับ</label>
-                            <div class="col-sm-10">
+                    <form action="{{url_for('insert_count_no')}}" method="POST">
+                        <!-- <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">รหัสคณะ</label>
+                            <div class="col-sm-9">
                                 <input type="text" name="facId" id="facId" class="form-control" placeholder="ลำดับ"
                                     required>
                             </div>
-                        </div>
+                        </div> -->
+
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">คณะ</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="fac" class="form-control" placeholder="คณะ" required>
+                            <label for="" class="col-sm-3 col-form-label">คณะ</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="facId" id="facId">
+                                    {% for data in facdetail %}
+                                    <option value="{{data[0]}}">{{data[1]}}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <!-- <input type="text" name="fac" class="form-control" placeholder="คณะ" required> -->
+                            </div>
+                            <div class="col-sm-3" align="center">
+                                <a class="btn btn-primary" data-toggle="modal"
+                                    data-target="#inserfactModal">เพิ่มคณะ</a>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">สาขา</label>
-                            <div class="col-sm-10">
+                        <!-- <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">สาขา</label>
+                            <div class="col-sm-9">
                                 <input type="text" name="department" class="form-control" placeholder="สาขา" required>
                             </div>
+                        </div> -->
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">จำนวน</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="num" class="form-control" placeholder="จำนวน" required>
+                            </div>
+
                         </div>
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">จำนวน</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="num" class="form-control" placeholder="จำนวน" required>
+                            <label for="" class="col-sm-3 col-form-label">ระดับ</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="dregree" id="dregree">
+                                    <option value="1">ป.ตรี</option>
+                                    <option value="2">ป.โท</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">วันที่เข้ารับ</label>
+                            <div class="col-sm-9">
+                                <input type="date" name="dateuse" class="form-control" placeholder="วันที่" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">ช่วงที่เข้ารับ</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="range" id="range">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">ลำดับที่เข้ารับ</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="countNo" id="countNo" class="form-control"
+                                    placeholder="ลำดับที่เข้ารับ" required>
                             </div>
                         </div>
                         <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
@@ -109,13 +119,6 @@
                         <div class="form-group row">
                             <div class="col-sm-10" align="center">
                                 <button id="insertfact" type="submit" class="btn btn-primary">เพิ่มข้อมูล</button>
-                                <!-- <br>
-                                <br>
-                                <select name="" id="">
-                                    {% for data in datas %}
-                                    <option value="{{data[0]}}">คณะ : {{data[0]}} : {{data[1]}}</option>
-                                    {% endfor %}
-                                </select> -->
                             </div>
                         </div>
                 </div>
@@ -129,78 +132,254 @@
         </div>
         <br>
         <hr>
-        <div class="container">
-            <table class="table table-bordered">
-                <tr>
-                    <th style="text-align:center">ลำดับ</th>
-                    <th style="text-align:center">คณะ</th>
-                    <th style="text-align:center">สาขา</th>
-                    <th style="text-align:center">จำนวน</th>
-                    <th style="text-align:center">แก้ไขข้อมูล</th>
-                </tr>
-                {% for data in datas %}
-                <tr align="center">
-                    <td>{{data[0]}}</td>
-                    <td>{{data[1]}}</td>
-                    <td>{{data[2]}}</td>
-                    <td>{{data[3]}}</td>
-                    <td>
-                        <a href="" class="btn btn-warning btn-xs" data-toggle="modal"
-                            data-target="#modaledit{{data[0]}}">Edit</a>
-                        <a href="/delete/{{data[0]}}" class="btn btn-danger btn-xs"
-                            onclick="return confirm('คุณต้องการลบข้อมูลหรือไม่?')">ลบ</a>
-                    </td>
-                </tr>
-                <div id="modaledit{{data[0]}}" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">อัพเดทข้อมูลของท่าน</h4>
+        <div class="container" style="background: #fff9f7; padding-top: 20px; padding-left: 20px;">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <form action="/update_dateuse" method="POST">
+                                <label>วันที่เข้ารับ</label>
+                                <select class="form-control" name="dateuse" id="dateuse">
+                                    <option value="%%">ทั้งหมด</option>
+                                    {% for data in datasert %}
+                                    <option value="{{data[4]}}">{{data[4]}}</option>\
+                                    {% endfor %}
+                                </select>
+                                <input id="btcf" class="btn btn-primary btn-sm" type="submit" value="dateuse">
+                                <label for="">ตั้งค่าวันที่ต้องการใช้งาน</label>
+                            </form>
+                        </div>
+
+                        <!-- <div class="col-sm-3">
+                                <label>ช่วงที่เข้ารับ</label>
+                                <select class="form-control" name="range" id="range">
+                                    <option value="%%">ทั้งหมด</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
                             </div>
-                            <div class="modal-body">
-                                <form action="/update" method="POST">
-                                    <div class="form-group">
-                                        <label>ลำดับ:</label>
-                                        <input type="hidden" name="Id" value="{{data[0]}}">
-                                        <input type="text" class="form-control" name="facId" value="{{data[0]}}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>คณะ:</label>
-                                        <input type="text" class="form-control" name="fac" value="{{data[1]}}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>สาขา:</label>
-                                        <input type="text" class="form-control" name="department" value="{{data[2]}}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>จำนวน:</label>
-                                        <input type="text" class="form-control" name="num" value="{{data[3]}}">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-primary" type="submit">อัพเดท</button>
-                                    </div>
-                                </form>
+
+                            <div class="col-sm-1" align="center" style="align-self: self-end;">
+                                <button id="findfact" type="submit" class="btn btn-primary">ค้นหา</button>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                        </div> -->
+                        <!-- <select class="form-control" name="dregree" id="dregree">
+                            <option value="1" selected>ป.ตรี</option>
+                            <option value="2">ป.โท</option>
+                        </select> -->
+                        <!-- <div class="form-group row">
+                            <div class="col-sm-10" align="center">
+                                <button id="findfact" type="submit" class="btn btn-primary">ค้นหา</button>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <br>
+            <hr>
+            <div class="container" style="background: #fff9f7; padding-top: 20px; padding-left: 20px;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form action="{{url_for('find_fac')}}" method="POST">
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <label>วันที่เข้ารับ</label>
+                                    <select class="form-control" name="dateuse" id="dateuse">
+                                        <option value="%%">ทั้งหมด</option>
+                                        {% for data in datasert %}
+                                        <option value="{{data[4]}}">{{data[4]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>ช่วงที่เข้ารับ</label>
+                                    <select class="form-control" name="range" id="range">
+                                        <option value="%%">ทั้งหมด</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-1" align="center" style="align-self: self-end;">
+                                    <button id="findfact" type="submit" class="btn btn-primary">ค้นหา</button>
+                                </div>
+
+                            </div>
+                            <!-- <select class="form-control" name="dregree" id="dregree">
+                            <option value="1" selected>ป.ตรี</option>
+                            <option value="2">ป.โท</option>
+                        </select> -->
+                            <!-- <div class="form-group row">
+                            <div class="col-sm-10" align="center">
+                                <button id="findfact" type="submit" class="btn btn-primary">ค้นหา</button>
+                            </div>
+                        </div> -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="container">
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="text-align:center">รหัสคณะ</th>
+                        <th style="text-align:center">คณะ</th>
+                        <th style="text-align:center">จำนวน</th>
+                        <th style="text-align:center">วันที่เข้ารับ</th>
+                        <th style="text-align:center">ช่วงที่เข้ารับ</th>
+                        <th style="text-align:center">ระดับ</th>
+                        <th style="text-align:center">ลำดับที่เข้ารับ</th>
+                        <th style="text-align:center">แก้ไขข้อมูล</th>
+                    </tr>
+                    {% for data in datas %}
+                    <tr align="center">
+                        <td>{{data[0]}}</td>
+                        <td>{{data[1]}}</td>
+                        <td>{{data[3]}}</td>
+                        <td>{{data[4]}}</td>
+                        <td>{{data[5]}}</td>
+                        {% if data[6] == 1 %}
+                        <td>ป.ตรี</td>
+                        {% else %}
+                        <td>ป.โท</td>
+                        {% endif %}
+                        <td>{{data[7]}}</td>
+                        <td>
+                            <a href="" class="btn btn-warning btn-xs" data-toggle="modal"
+                                data-target="#modaledit{{data[7]}}">แก้ไข</a>
+                            <a href="/delete/{{data[7]}}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('คุณต้องการลบข้อมูลหรือไม่?')">ลบ</a>
+                        </td>
+                    </tr>
+                    <div id="modaledit{{data[7]}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">อัพเดทข้อมูลของท่าน</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/update" method="POST">
+                                        <div class="form-group">
+                                            <label>ลำดับ:</label>
+                                            <input type="hidden" name="countId" value="{{data[7]}}">
+                                            <input type="text" class="form-control" name="facId" value="{{data[0]}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>คณะ:</label>
+                                            <input type="text" class="form-control" name="fac" value="{{data[1]}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>จำนวน:</label>
+                                            <input type="text" class="form-control" name="num" value="{{data[3]}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>วันที่เข้ารับ:</label>
+                                            <input type="date" value="{{data[4]}}" name="dateuse" class="form-control"
+                                                placeholder="วันที่">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>ช่วงที่เข้ารับ:</label>
+                                            <select class="form-control" name="range" id="range">
+                                                <option value="{{data[5]}}">{{data[5]}}</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>ระดับ:</label>
+                                            {% if data[6] == 1 %}
+                                            <select class="form-control" name="dregree" id="dregree">
+                                                <option value="1" selected>ป.ตรี</option>
+                                                <option value="2">ป.โท</option>
+                                            </select>
+                                            {% else %}
+                                            <select class="form-control" name="dregree" id="dregree">
+                                                <option value="1">ป.ตรี</option>
+                                                <option value="2" selected>ป.โท</option>
+                                            </select>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-primary" type="submit">อัพเดท</button>
+                                            <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </div>
+                    {% endfor %}
+                </table>
+                {% for data in facsum %}
+                จำนวนนักศึกษาทั้งหมด {{data[0]}}
                 {% endfor %}
-            </table>
-            {% for data in facsum %}
-            จำนวนนักศึกษาทั้งหมด {{data[0]}}
-            {% endfor %}
+            </div>
+
+            <hr>
         </div>
+        <div id="inserfactModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">อัพเดทข้อมูลของท่าน</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{url_for('insert_fac')}}" method="POST">
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 col-form-label">รหัสคณะ</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="facId" id="facId" class="form-control" placeholder="ลำดับ"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="" class="col-sm-3 col-form-label">คณะ</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="fac" class="form-control" placeholder="คณะ" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">เพิ่มคณะ</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
 
-        <hr>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -2,12 +2,8 @@
 # import testtime
 import cv2 as cv
 from imutils.video import FPS
-import imutils
 import argparse
-import sys
 import numpy as np
-import os.path
-import math
 
 from numpy.core.numeric import False_
 import testtime
@@ -15,7 +11,6 @@ from numpy.lib.function_base import average
 from mylib.centroidtracker import CentroidTracker
 from mylib.trackableobject import TrackableObject
 import requests
-import time
 from datetime import datetime, time as datetime_time, timedelta
 url = 'https://notify-api.line.me/api/notify'
 token = 'mXP8sDpdjFdvB9chsvHPujJbb8Cbs7gqzqXJ5FDCIrk'
