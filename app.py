@@ -24,7 +24,7 @@ mycursor = mydb.cursor()
 def index():
     # con=mydb.connection.cursor()
     # sql = "SELECT * FROM faculty order by fac_id "
-    sql = "select dc.fac_id ,f.fac_name,f.department,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id order by dc.count_id "
+    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id order by dc.dateuse, dc.count_no "
     mycursor.execute(sql)
     res = mycursor.fetchall()
     sql = "select fac_id ,fac_name from faculty f order by fac_id "
@@ -56,14 +56,16 @@ def monitoring():
     current_date = now.strftime("%Y-%m-%d")
     print(current_date)
     val = [current_date]
-    selectDate = "select cp.start_time ,cp.end_time from count_proc cp left join date_counts dc ON cp.count_id  =  dc.count_id  WHERE to_char(cp.start_time , 'YYYY-MM-DD')  =  %s   order by range_count desc LIMIT 1 "
+    selectDate = "select cp.start_time ,cp.end_time from count_proc cp left join date_counts dc ON cp.count_id  =  dc.count_id  WHERE dc.dateuse  =  %s   and cp.start_time is not null order by  dc.count_no  desc LIMIT 1  "
     mycursor.execute(selectDate,val)
     selectDate = mycursor.fetchall()
     for selectDate in selectDate:
         # dateuse = datamonitor[0]
         startTime = selectDate[0]
         endTime = selectDate[1]
-    sql = "select dc.dateuse, sum(cp.current_person),sum(dc.num_of_graduates)  from count_proc cp inner join date_counts dc ON cp.count_id = dc.count_id where  to_char(cp.start_time , 'YYYY-MM-DD') =  %s  group by dc.dateuse"
+    startTime = startTime.strftime("%H:%M:%S")
+    endTime = endTime.strftime("%H:%M:%S")
+    sql = "select dc.dateuse, sum(cp.current_person),sum(dc.num_of_graduates)  from count_proc cp inner join date_counts dc ON cp.count_id = dc.count_id where  dc.dateuse =  %s  group by dc.dateuse"
     mycursor.execute(sql,val)
     datamonitor = mycursor.fetchall()
     print(datamonitor)
@@ -87,6 +89,7 @@ def monitoring():
 @ app.route('/update', methods=['POST'])
 def update():
     print("update")
+    countNo = request.form["countNo"]
     facId = request.form["facId"]
     countId = request.form["countId"]
     # fac = request.form["fac"]
@@ -95,8 +98,8 @@ def update():
     dateuse = request.form["dateuse"]
     range = request.form["range"]
     dregree = request.form["dregree"]
-    sql = "UPDATE date_counts SET fac_id=%s, dateuse=%s, range_count=%s, degree_id=%s, num_of_graduates=%s WHERE count_id=%s"
-    val = [facId,dateuse,range,dregree, num, countId]
+    sql = "UPDATE date_counts SET  dateuse=%s, range_count=%s, degree_id=%s, num_of_graduates=%s ,count_no=%s,fac_id=%s  WHERE count_id=%s"
+    val = [dateuse,range,dregree, num,countNo,facId, countId]
     print(val)
     mycursor.execute(sql, val)
     mydb.commit()
@@ -124,12 +127,24 @@ def updateDateuse():
     return redirect(url_for("index"))
 
 
+@ app.route("/update_range_count", methods=['GET', 'POST'])
+def updateRangeCount():
+    print("update_dateuse")
+    rangecount = request.form["rangecount"]
+    print(rangecount)
+    sql = 'UPDATE parameters SET range_count    = %s'
+    val = [rangecount]
+    mycursor.execute(sql, val)
+    mydb.commit()
+    return redirect(url_for("index"))
+
+
 @ app.route("/ ", methods=['GET', 'POST'])
 def find_fac():
     print("index")
         # con=mydb.connection.cursor()
     # sql = "SELECT * FROM faculty  where dateuse=%s order by fac_id"
-    sql = "select dc.fac_id ,f.fac_name,f.department,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s and dc.range_count like %s order by dc.count_id "
+    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id ,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s and dc.range_count like %s order by dc.count_id "
     dateuse = request.form["dateuse"]
     range = request.form["range"]
     val =[dateuse,range]
@@ -224,12 +239,12 @@ def insert_count_no():
             print(dregree)
             countNo = request.form["countNo"]
             print(countNo)
-            
+            currentperson = 0;
 
-            sql = "INSERT INTO count_proc (fac_id, start_time, end_time, data_stamp, current_person, time_per_person) VALUES( NULL, NULL, NULL, NULL, NULL, NULL)"
+            sql = "INSERT INTO count_proc (fac_id, start_time, end_time, date_stamp, current_person, time_per_person ) VALUES( NULL, NULL, NULL, NULL, 0, NULL)"
+            # val = [facId,dateuse,currentperson]
             mycursor.execute(sql)
             mydb.commit()
-
             sql = "(select  max(count_id)::text from count_proc cp)"
             mycursor.execute(sql)
             mydb.commit()
@@ -238,10 +253,10 @@ def insert_count_no():
                 print(getcountid)
                 getcountid = setcountid[0]
 
-            sql = "INSERT INTO date_counts (fac_id, dateuse, range_count, count_id, degree_id, num_of_graduates) VALUES( %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO date_counts (fac_id, dateuse, range_count, count_id, degree_id, num_of_graduates,count_no) VALUES( %s, %s, %s, %s, %s, %s,%s)"
             # sql = "INSERT INTO faculty (fac_id, fac_name, department, num_of_graduates, dateuse, range_count, degrees_id,count_no) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
             # val = [facId, fac]
-            val = [facId,dateuse, range, getcountid, dregree , num]
+            val = [facId,dateuse, range, getcountid, dregree , num ,countNo]
             print("insert_count_no")
             print(val)
             print(sql)
