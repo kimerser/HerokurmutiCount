@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import Type
 from flask import Flask, render_template, redirect, request, url_for, Response, jsonify
 import psycopg2
-import schedule
-import time
 
 app = Flask(__name__)
 
