@@ -159,25 +159,20 @@
                                 <select class="form-control" name="dateuse" id="dateuse">
                                     <option value="%%">ทั้งหมด</option>
                                     {% for data in datasert %}
-                                    <option value="{{data[4]}}">{{data[4]}}</option>
+                                    <option value="{{data[0]}}">{{data[0]}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-sm-3">
+                            <!-- <div class="col-sm-3">
                                 <label>ช่วงที่เข้ารับ</label>
                                 <select class="form-control" name="range" id="range">
                                     <option value="%%">ทั้งหมด</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
+                                    <option value="1">ช่วงเช้าก่อนพัก</option>
+                                    <option value="2">ช่วงเช้าหลังพัก</option>
+                                    <option value="3">ช่วงบ่ายก่อนพัก</option>
+                                    <option value="4">ช่วงบ่ายหลังพัก</option>
                                 </select>
-                            </div>
+                            </div> -->
 
                             <div class="col-sm-1" align="center" style="align-self: self-end;">
                                 <button id="findfact" type="submit" class="btn btn-primary">ค้นหา</button>

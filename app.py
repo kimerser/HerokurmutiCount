@@ -25,6 +25,11 @@ def index():
     sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id order by dc.dateuse, dc.count_no "
     mycursor.execute(sql)
     res = mycursor.fetchall()
+
+    sql = "select dc.dateuse from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id group by dc.dateuse order by dc.dateuse"
+    mycursor.execute(sql)
+    datasert = mycursor.fetchall()
+
     sql = "select fac_id ,fac_name from faculty f order by fac_id "
     mycursor.execute(sql)
     facdetail = mycursor.fetchall()
@@ -37,7 +42,9 @@ def index():
     mycursor.execute(sql)
     side = mycursor.fetchall()
     # print(rows)
-    return render_template("index.html", datas=res,facdetail=facdetail, datasert=res, facsum=facsum, side=side)
+
+    
+    return render_template("index.html", datas=res,facdetail=facdetail, datasert=datasert, facsum=facsum, side=side)
 
 @app.route("/configparamers")
 def configparamers():
@@ -47,8 +54,18 @@ def configparamers():
     print(side)
     return render_template("admin.html", side=side)
 
+@app.route("/login")
+def login():
+    # sql = 'select p."timeDelay"  ,p.left ,p.right,p.timenotify,p.dateuse,p.range_count   from parameters p'
+    # mycursor.execute(sql)
+    # side = mycursor.fetchall()
+    # print(side)
+    return render_template("login.html")
+
 @app.route("/monitoring", methods=['GET'])
 def monitoring():
+    startTime = "-"
+    endTime = "-"
     print(datetime.now())
     now = datetime.now()
     current_date = now.strftime("%Y-%m-%d")
@@ -61,6 +78,7 @@ def monitoring():
         # dateuse = datamonitor[0]
         startTime = selectDate[0]
         endTime = selectDate[1]
+    
     startTime = startTime.strftime("%H:%M:%S")
     endTime = endTime.strftime("%H:%M:%S")
     sql = "select dc.dateuse, sum(cp.current_person),sum(dc.num_of_graduates)  from count_proc cp inner join date_counts dc ON cp.count_id = dc.count_id where  dc.dateuse =  %s  group by dc.dateuse"
@@ -142,10 +160,10 @@ def find_fac():
     print("index")
         # con=mydb.connection.cursor()
     # sql = "SELECT * FROM faculty  where dateuse=%s order by fac_id"
-    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id ,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s and dc.range_count like %s order by dc.count_id "
+    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id ,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s order by dc.count_id "
     dateuse = request.form["dateuse"]
-    range = request.form["range"]
-    val =[dateuse,range]
+    # range = request.form["range"]
+    val =[dateuse]
     print(val)
     mycursor.execute(sql,val)
     res = mycursor.fetchall()
@@ -157,6 +175,10 @@ def find_fac():
     sql = "select dateuse from date_counts dc"
     mycursor.execute(sql)
     res2 = mycursor.fetchall()
+
+    sql = "select dc.dateuse from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id group by dc.dateuse order by dc.dateuse"
+    mycursor.execute(sql)
+    datasert = mycursor.fetchall()
     # # print(res)
     # sql = "SELECT sum(num_of_graduates) FROM faculty"
     # mycursor.execute(sql)
@@ -166,7 +188,7 @@ def find_fac():
     # mycursor.execute(sql)
     # side = mycursor.fetchall()
     # # print(rows)
-    return render_template("index.html", datas=res,facdetail=facdetail,datasert=res)
+    return render_template("index.html", datas=res,facdetail=facdetail,datasert=datasert)
 
 
 @ app.route("/update_right", methods=['GET', 'POST'])
