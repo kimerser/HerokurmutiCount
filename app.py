@@ -186,6 +186,12 @@ def find_fac():
     sql = "select dc.dateuse from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id group by dc.dateuse order by dc.dateuse"
     mycursor.execute(sql)
     datasert = mycursor.fetchall()
+    
+
+    sql = "SELECT sum(num_of_graduates) FROM date_counts dc where dc.dateuse like %s "
+    val =[dateuse]
+    mycursor.execute(sql,val)
+    facsum = mycursor.fetchall()
     # # print(res)
     # sql = "SELECT sum(num_of_graduates) FROM faculty"
     # mycursor.execute(sql)
@@ -195,7 +201,7 @@ def find_fac():
     # mycursor.execute(sql)
     # side = mycursor.fetchall()
     # # print(rows)
-    return render_template("index.html", datas=res,facdetail=facdetail,datasert=datasert)
+    return render_template("index.html", datas=res,facdetail=facdetail,datasert=datasert,facsum= facsum)
 
 
 @ app.route("/update_right", methods=['GET', 'POST'])
