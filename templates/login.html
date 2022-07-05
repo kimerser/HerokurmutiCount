@@ -45,10 +45,15 @@
             </div>
 
             <!-- Login Form -->
-            <form>
-                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-                <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-                <input type="submit" class="fadeIn fourth" value="Log In">
+            <form class="form-group" action="{{ url_for('login') }}" method="post">
+                <!-- <input type="text" id="username" class="fadeIn second" name="login" placeholder="login"> -->
+                <input type="text" class="fadeIn second" name="username" placeholder="Username" id="username" required>
+                <input type="password" id="password" class="fadeIn third" name="password" placeholder="password"
+                    required>
+                <!-- <input type="password" class="fadeIn third" name="password" placeholder="Password" id="password"
+                    required> -->
+                <!-- <input type="submit" class="fadeIn fourth" value="Log In"> -->
+                <input type="submit" value="Login" class="fadeIn fourth" name="">
             </form>
 
             <!-- Remind Passowrd -->
