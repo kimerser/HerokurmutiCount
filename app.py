@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Type
-from flask import Flask, render_template, redirect, request, url_for, Response, jsonify
+from flask import Flask, render_template, redirect, request, url_for, Response, jsonify, flash, session
 import psycopg2
-
+from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # mydb = mysql.connector.connect(
@@ -18,7 +18,7 @@ mydb = psycopg2.connect(database="d7s6m6ath6ve13"
     , port="5432")
 mycursor = mydb.cursor()
 
-@app.route("/")
+@app.route("/index")
 def index():
     # con=mydb.connection.cursor()
     # sql = "SELECT * FROM faculty order by fac_id "
@@ -54,21 +54,22 @@ def configparamers():
     print(side)
     return render_template("admin.html", side=side)
 
-@app.route("/login")
-def login():
-    # sql = 'select p."timeDelay"  ,p.left ,p.right,p.timenotify,p.dateuse,p.range_count   from parameters p'
-    # mycursor.execute(sql)
-    # side = mycursor.fetchall()
-    # print(side)
-    return render_template("login.html")
+# @app.route("/login")
+# def login():
+#     # sql = 'select p."timeDelay"  ,p.left ,p.right,p.timenotify,p.dateuse,p.range_count   from parameters p'
+#     # mycursor.execute(sql)
+#     # side = mycursor.fetchall()
+#     # print(side)
+#     return render_template("login.html")
 
 @app.route("/monitoring", methods=['GET'])
 def monitoring():
-    startTime = "-"
-    endTime = "-"
+    
     print(datetime.now())
     now = datetime.now()
     current_date = now.strftime("%Y-%m-%d")
+    startTime = now
+    endTime = now
     print(current_date)
     val = [current_date]
     selectDate = "select cp.start_time ,cp.end_time from count_proc cp left join date_counts dc ON cp.count_id  =  dc.count_id  WHERE dc.dateuse  =  %s   and cp.start_time is not null order by  dc.count_no  desc LIMIT 1  "
@@ -129,7 +130,7 @@ def left():
     val = [left]
     mycursor.execute(sql, val)
     mydb.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("configparamers"))
 
 @ app.route("/update_dateuse", methods=['GET', 'POST'])
 def updateDateuse():
@@ -155,7 +156,7 @@ def updateRangeCount():
     return redirect(url_for("index"))
 
 
-@ app.route("/ ", methods=['GET', 'POST'])
+@ app.route("/index", methods=['GET', 'POST'])
 def find_fac():
     print("index")
         # con=mydb.connection.cursor()
@@ -199,8 +200,17 @@ def right():
     val = [right]
     mycursor.execute(sql, val)
     mydb.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("configparamers"))
 
+@ app.route("/update_linetoken", methods=['GET', 'POST'])
+def linetoken():
+    linetoken = request.form["linetoken"]
+    # sql = "UPDATE `parameter` SET `right`= %s"
+    sql = 'UPDATE parameters SET "linetoken"= %s'
+    val = [linetoken]
+    mycursor.execute(sql, val)
+    mydb.commit()
+    return redirect(url_for("configparamers"))
 
 @ app.route("/delaytime", methods=['GET', 'POST'])
 def delaytime():
@@ -210,9 +220,17 @@ def delaytime():
     val = [delaytime]
     mycursor.execute(sql, val)
     mydb.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("configparamers"))
 
-
+@ app.route("/update_timenotify", methods=['GET', 'POST'])
+def timenotify():
+    timenotify = request.form["timenotify"]
+    # sql = "UPDATE `parameter` SET `timeDelay`= %s"
+    sql = 'UPDATE parameters SET "timenotify"= %s'
+    val = [timenotify]
+    mycursor.execute(sql, val)
+    mydb.commit()
+    return redirect(url_for("configparamers"))
 
 @ app.route("/insert_fac", methods=['GET', 'POST'])
 def insert_fac():
@@ -402,12 +420,62 @@ def delelte(id_data):
 #             return redirect(url_for("index"))
 #         return redirect(url_for("index"))
 
+@app.route('/')
+def home():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        return render_template('login.html', username=session['username'])
+        #  User is not loggedin redirect to login page
+    return redirect(url_for('login'))
 
+from datetime import datetime
 @ app.route('/', methods=['POST'])
 def my_form_post():
     text = request.form['text']
     processed_text = text.upper()
     return processed_text
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    print("login")
+#     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        print("method")
+        username = request.form['username']
+        password = request.form['password']
+        print(password)
+
+        # Check if account exists using MySQL
+        # mycursor.execute("DELETE FROM date_counts WHERE  count_id = " + (id_data))
+        mycursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        # Fetch one record and return result
+        account = mycursor.fetchone()
+        print(account)
+        if account:
+            password_rs = account[3]
+            print(password_rs, password)
+            # If account exists in users table in out database
+            if (password_rs == password):
+                print("before session")
+                # Create session data, we can access this data in other routes
+                # session['loggedin'] = True
+                # session['id'] = account['id']
+                # session['username'] = account['username']
+                # Redirect to home page
+                print("Redirect to index")
+                if(username == 'admin'):
+                    return redirect(url_for('configparamers'))
+                else:
+                    return redirect(url_for('index'))
+            else:
+                # Account doesnt exist or username/password incorrect
+                flash('Incorrect username/password')
+        else:
+            # Account doesnt exist or username/password incorrect
+            flash('Incorrect username/password')
+
+    return render_template('login.html')
 
 
 if __name__ == "__main__":
