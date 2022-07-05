@@ -80,12 +80,12 @@ def monitoring():
         startTime = selectDate[0]
         endTime = selectDate[1]
     if startTime is None :
-        startTime = now
+        startTime = now.strftime("%H:%M:%S")
     else:
          startTime = startTime.strftime("%H:%M:%S")
    
     if endTime is None :
-        endTime = now
+        endTime = now.strftime("%H:%M:%S")
     else:
         endTime = endTime.strftime("%H:%M:%S")
     sql = "select dc.dateuse, sum(cp.current_person),sum(dc.num_of_graduates)  from count_proc cp inner join date_counts dc ON cp.count_id = dc.count_id where  dc.dateuse =  %s  group by dc.dateuse"
