@@ -79,9 +79,15 @@ def monitoring():
         # dateuse = datamonitor[0]
         startTime = selectDate[0]
         endTime = selectDate[1]
-    
-    startTime = startTime.strftime("%H:%M:%S")
-    endTime = endTime.strftime("%H:%M:%S")
+    if startTime is None :
+        startTime = now
+    else:
+         startTime = startTime.strftime("%H:%M:%S")
+   
+    if endTime is None :
+        endTime = now
+    else:
+        endTime = endTime.strftime("%H:%M:%S")
     sql = "select dc.dateuse, sum(cp.current_person),sum(dc.num_of_graduates)  from count_proc cp inner join date_counts dc ON cp.count_id = dc.count_id where  dc.dateuse =  %s  group by dc.dateuse"
     mycursor.execute(sql,val)
     datamonitor = mycursor.fetchall()
