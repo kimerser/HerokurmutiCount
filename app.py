@@ -88,7 +88,7 @@ def monitoring():
 
     print(currentPerson , " currentPerson")
     print(numOfGraduates , " numOfGraduates")
-    if(currentPerson != 0 and numOfGraduates != 0):
+    if(currentPerson != 0 or numOfGraduates != 0):
         percen = (currentPerson/numOfGraduates) * 100 
         percen = int(percen)
         print(percen)
