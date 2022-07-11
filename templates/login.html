@@ -14,26 +14,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
-    <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 </head>
 
 <body>
-
-    <!-- <div class="container" id="header">
-        <div class="row">
-            <div class="col-sm-2">
-                <img id="logo" src="{{url_for('static', filename='logo2.png')}}" />
-            </div>
-            <div class="col-sm-9" id="headerfont">
-                ระบบนับจำนวนบัณฑิตที่เข้ารับพิธีพระราชทานปริญญาบัตร มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน
-
-            </div>
-        </div>
-
-    </div> -->
 
     <div class="wrapper fadeInDown">
         <div id="formContent">
@@ -50,16 +33,15 @@
                 <input type="text" class="fadeIn second" name="username" placeholder="Username" id="username" required>
                 <input type="password" id="password" class="fadeIn third" name="password" placeholder="password"
                     required>
-                <!-- <input type="password" class="fadeIn third" name="password" placeholder="Password" id="password"
-                    required> -->
-                <!-- <input type="submit" class="fadeIn fourth" value="Log In"> -->
+
+                {% for message in get_flashed_messages() %}
+                <br>
+                <div id="alertmessage" class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+                {% endfor %}
                 <input type="submit" value="Login" class="fadeIn fourth" name="">
             </form>
-
-            <!-- Remind Passowrd -->
-            <!-- <div id="formFooter">
-                <a class="underlineHover" href="#">Forgot Password?</a>
-            </div> -->
 
         </div>
     </div>

@@ -30,40 +30,6 @@
         </div>
 
     </div>
-
-    <!-- <center>
-        <br>
-        <br>
-        <p class="fs-1">แก้ไขข้อมูลเริ่มต้น</p>
-    </center> -->
-    <!-- {% block conntent %}
-    {% endblock %} -->
-    <!-- <div class="container">
-        <form action="" method="post">
-            <div class="row">
-                <div class="col-sm">
-                    <label for="">ตั้งค่าเวลา</label>
-                    <input type="text" name="Time" id="Time">
-                </div>
-                <div class="col-sm">
-                    <label for="">เลื่อนซ้าย</label>
-                    <input type="text" name="left" id="left">
-                </div>
-                <div class="col-sm">
-                    <label for="">เลื่อนขวา</label>
-                    <input type="text" name="right" id="right">
-                </div>
-                <div class="col-sm">
-                    <button type="submit">
-                        Save
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div> -->
-
-    <!-- <br>
-    <br> -->
     <div class="container" style="background: #fff9f7; padding-top: 20px; padding-left: 20px;">
         <div class="col-sm-12">
             <div class="row">
@@ -73,15 +39,22 @@
                         <div class="form-group row">
                             <form action="/delaytime" method="POST">
 
-                                <input name="delaytime" placeholder="หน่วงเวลา {{data[0]}}">
+                                <input type="number" step="0.01" name="delaytime" placeholder="หน่วงเวลา {{data[0]}}"
+                                    required>
                                 <input id="btcf" class="btn btn-primary btn-sm" type="submit" value="หน่วงเวลา">
                                 <label for="">เมื่อวัตถุหายไปมากกว่าเวลาที่กำหนด
                                     หากเจอวัตถุอีกรอบจะถือเป็นวัตถุใหม่</label>
                             </form>
+                            {% for message in get_flashed_messages() %}
+                            <div id="alertmessage" class="alert alert-danger" role="alert">
+                                {{message}}
+                            </div>
+                            {% endfor %}
                         </div>
+
                         <div class="form-group row">
                             <form action="/update_left" method="POST">
-                                <input type="number" name="left" placeholder="ซ้าย {{data[1]}}">
+                                <input type="number" name="left" placeholder="ซ้าย {{data[1]}}" required>
                                 <input id="btcf" class="btn btn-primary btn-sm" type="submit" value="เลื่อนเส้นซ้าย">
                                 <label for="">สร้างเส้นกรอบเริ่มจากตรงกลางขยับไปด้านซ้ายเป็นหน่วย px</label>
                             </form>
@@ -89,7 +62,7 @@
                         <div class="form-group row">
                             <form action="/update_right" method="POST">
 
-                                <input type="number" name="right" placeholder="ขวา {{data[2]}}">
+                                <input type="number" name="right" placeholder="ขวา {{data[2]}}" required>
                                 <input id="btcf" class="btn btn-primary btn-sm" type="submit" value="เลื่อนเส้นขวา">
                                 <label for="">สร้างเส้นกรอบเริ่มจากตรงกลางขยับไปด้านขวาเป็นหน่วย px</label>
                             </form>
@@ -97,7 +70,7 @@
                         <div class="form-group row">
                             <form action="/update_linetoken" method="POST">
 
-                                <input type="txt" name="linetoken" placeholder="Line Token Link">
+                                <input type="txt" name="linetoken" placeholder="Line Token Link" required>
                                 <input id="btcf" class="btn btn-primary btn-sm" type="submit" value="Line Token">
                                 <label for="">ใส่ Line Token ที่ต้องการแจ้งเตือนไปยังกลุ่มนั้น ๆ</label>
                             </form>
@@ -105,7 +78,7 @@
                         <div class="form-group row">
                             <form action="/update_timenotify" method="POST">
 
-                                <input type="number" name="timenotify" placeholder="{{data[3]}}">
+                                <input type="number" name="timenotify" placeholder="{{data[3]}}" required>
                                 <input id="btcf" class="btn btn-primary btn-sm" type="submit" value="timenotify">
                                 <label for="">ตั้งค่าเวลาที่ต้องการให้ส่งข้อความไปที่ไลน์ทุก ๆ กี่วินาที</label>
                             </form>
