@@ -14,7 +14,7 @@ mycursor = mydb.cursor()
 
 @app.route("/index")
 def index():
-    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id order by dc.dateuse, dc.count_no "
+    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id order by dc.range_count "
     mycursor.execute(sql)
     res = mycursor.fetchall()
 
@@ -327,7 +327,7 @@ def find_fac():
     print("index")
         # con=mydb.connection.cursor()
     # sql = "SELECT * FROM faculty  where dateuse=%s order by fac_id"
-    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id ,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s order by dc.count_id "
+    sql = "select dc.fac_id ,f.fac_name,f.fac_name,dc.num_of_graduates,dc.dateuse,dc.range_count,dc.degree_id ,dc.count_id ,dc.count_no from date_counts dc  inner join faculty f on dc.fac_id = f.fac_id inner join degrees d on d.degree_id = dc.degree_id where dc.dateuse like %s order by dc.range_count "
     dateuse = request.form["dateuse"]
     # range = request.form["range"]
     val =[dateuse]
