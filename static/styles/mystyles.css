@@ -46,6 +46,15 @@
   margin-left: 30px;
 }
 
+#headerfont{
+  /* font-family: 'Kanit', sans-serif; */
+  font-size: 25px;
+  margin-top: 40px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  margin-left: 30px;
+}
+
 
 #insertfact{
   width: 100px;
@@ -57,3 +66,16 @@
 }
 
 
+#alertmessage {
+  width: 27%;
+  margin: 5px;
+  font-size: small;
+}
+
+#allreceive{
+  background-color: #e9e6e4;
+}
+
+#border{
+  border-color: black;
+}

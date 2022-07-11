@@ -56,6 +56,11 @@
   width: 100px;
 }
 
+#alertmessage {
+  width: 85%;
+  margin: 10px;
+  margin-left: 33px;
+}
 
 
 /* BASIC */
