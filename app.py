@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, request, url_for, Response, 
 import psycopg2
 # from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
-
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 mydb = psycopg2.connect(database="d7s6m6ath6ve13"
     , user="zgvqfwsigmwxmz"
     , password="1165a95e7ba1d4c6455d6cab658649c2a5490c8fff39ab89d0be207935eb351c"
