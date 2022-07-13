@@ -211,7 +211,7 @@
         <br><br>
         <div class="container">
             <table class="table table-bordered">
-                <tr style="background-color: whitesmoke;" id="border">
+                <tr style="background-color: lightsteelblue;" id="border">
                     <th id="border" style="text-align:center">วันที่เข้ารับ</th>
                     <th id="border" style="text-align:center">ช่วงที่เข้ารับ</th>
                     <th id="border" style="text-align:center">คณะ</th>
@@ -222,13 +222,13 @@
                 </tr>
                 {% for data in datas %}
                 {% if data[5] == '1' %}
-                <tr id="border" align="center" style="background-color: aliceblue;">
+                <tr id="border" align="center" style="background-color: #FEB9D0;">
                     {% elif data[5] == '2' %}
-                <tr id="border" align="center" style="background-color: rgb(218, 234, 248);">
+                <tr id="border" align="center" style="background-color: #96CFCF;">
                     {% elif data[5] == '3' %}
-                <tr id="border" align="center" style="background-color: rgb(201, 225, 246);">
+                <tr id="border" align="center" style="background-color: #C1B2C6;">
                     {% elif data[5] == '4' %}
-                <tr id="border" align="center" style="background-color: rgb(167, 207, 243);">
+                <tr id="border" align="center" style="background-color: #EFA375;">
                     {% endif %}
 
                     <td id="border">{{data[4]}}</td>
