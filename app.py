@@ -469,76 +469,40 @@ def insert_count_no():
             print(countNo)
             currentperson = 0;
 
-            sql = "INSERT INTO count_proc (fac_id, start_time, end_time, date_stamp, current_person, time_per_person ) VALUES( NULL, NULL, NULL, NULL, 0, NULL)"
-            # val = [facId,dateuse,currentperson]
-            mycursor.execute(sql)
-            mydb.commit()
-            sql = "(select  max(count_id)::text from count_proc cp)"
-            mycursor.execute(sql)
-            mydb.commit()
-            setcountid = mycursor.fetchall()
-            for getcountid in setcountid:
-                print(getcountid)
-                getcountid = setcountid[0]
+            mycursor.execute('SELECT * from date_counts dc where fac_id = %s and range_count = %s and dateuse = %s', (facId,range,dateuse))
+            # Fetch one record and return result
+            checkdata = mycursor.fetchone()
+            if checkdata:
+                flash('มีข้อมูลซ้ำในระบบ')
+            else:
+                sql = "INSERT INTO count_proc (fac_id, start_time, end_time, date_stamp, current_person, time_per_person ) VALUES( NULL, NULL, NULL, NULL, 0, NULL)"
+                # val = [facId,dateuse,currentperson]
+                mycursor.execute(sql)
+                mydb.commit()
+                sql = "(select  max(count_id)::text from count_proc cp)"
+                mycursor.execute(sql)
+                mydb.commit()
+                setcountid = mycursor.fetchall()
+                for getcountid in setcountid:
+                    print(getcountid)
+                    getcountid = setcountid[0]
 
-            sql = "INSERT INTO date_counts (fac_id, dateuse, range_count, count_id, degree_id, num_of_graduates,count_no) VALUES( %s, %s, %s, %s, %s, %s,%s)"
-            # sql = "INSERT INTO faculty (fac_id, fac_name, department, num_of_graduates, dateuse, range_count, degrees_id,count_no) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-            # val = [facId, fac]
-            val = [facId,dateuse, range, getcountid, dregree , num ,countNo]
-            print("insert_count_no")
-            print(val)
-            print(sql)
-            mycursor.execute(sql, val)
-            mydb.commit()
-            print(mycursor.rowcount, "record inserted.")
+                sql = "INSERT INTO date_counts (fac_id, dateuse, range_count, count_id, degree_id, num_of_graduates,count_no) VALUES( %s, %s, %s, %s, %s, %s,%s)"
+                # sql = "INSERT INTO faculty (fac_id, fac_name, department, num_of_graduates, dateuse, range_count, degrees_id,count_no) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+                # val = [facId, fac]
+                val = [facId,dateuse, range, getcountid, dregree , num ,countNo]
+                print("insert_count_no")
+                print(val)
+                print(sql)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                print(mycursor.rowcount, "record inserted.")
         else:
-            print("NOT SUCCESS")
+            flash('ระบบทำงานผิดพลาดลองใหม่อีกครั้ง')
     except Exception as e:
         print(e)
         return jsonify({'error': 'Missing data!'})
     return redirect(url_for("index"))
-
-# @ app.route("/testdate", methods=['GET', 'POST'])
-# def testdate():
-#     try:
-#         if request.method == "POST":
-#             datetestinput = request.form["datetestinput"]
-#             print(datetestinput)
-#         else:
-#             print("NOT SUCCESS")
-#     except Exception as e:
-#         return jsonify({'error': 'Missing data!'})
-#     return redirect(url_for("index"))
-# @ app.route('/process', methods=['POST'])
-# def process():
-
-#     email = request.form['email']
-#     name = request.form['name']
-
-#     if name and email:
-#         newName = name[::-1]
-
-#         return jsonify({'name': newName})
-
-#     return jsonify({'error': 'Missing data!'})
-# @app.route("/insert", methods=['GET', 'POST'])
-# def insert():
-#     if request.method == "POST":
-#         Time = request.form["Time"]
-#         if Time == '':
-#             print("hi")
-#         else:
-#             left = request.form["left"]
-#             right = request.form["right"]
-#             sql = "UPDATE `timedelay` SET `TimeDelay`=(%s),`left`=(%s),`right`=(%s) WHERE 1"
-#             val = [Time, left, right]
-#             mycursor.execute(sql, val)
-#             mydb.commit()
-#             print(mycursor.rowcount, "record inserted.")
-#     else:
-#         print("NOT SUCCESS")
-
-#     return redirect(url_for("index"))
 
 
 @ app.route('/delete/<string:id_data>', methods=['GET'])
@@ -546,69 +510,6 @@ def delelte(id_data):
     mycursor.execute("DELETE FROM date_counts WHERE  count_id = " + (id_data))
     mydb.commit()
     return redirect(url_for("index"))
-
-
-# @ app.route('/video_feed')
-# def video_feed():
-#     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-    # Video streaming route. Put this in the src attribute of an img tag
-# camera = cv2.VideoCapture(0)
-# switch = 1
-# selectcamera = 1
-
-
-# def gen_frames():
-#     sql = 'select p."timeDelay" ,p."left" ,p."right"  from "parameter" p'
-#     mycursor.execute(sql)
-#     myresult = mycursor.fetchall()
-#     left = 0
-#     right = 0
-#     for parameter in myresult:
-#         left = parameter[0]
-#         right = parameter[1]
-#         print(left, right)
-#     while True:
-#         success, frame = camera.read()  # read the camera frame
-#         frameHeight = frame.shape[0]
-#         frameWidth = frame.shape[1]
-#         cv2.line(frame, (frameWidth//2 - left, 0),
-#                  (frameWidth//2 - left, frameHeight), (0, 255, 255), 2)
-#         cv2.line(frame, (frameWidth//2 + right, 0),
-#                  (frameWidth//2 + right, frameHeight), (0, 255, 255), 2)
-#         if not success:
-#             break
-#         else:
-#             ret, buffer = cv2.imencode('.jpg', frame)
-#             frame = buffer.tobytes()
-#             yield (b'--frame\r\n'
-#                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-
-
-# @ app.route('/requests', methods=['POST', 'GET'])
-# def tasks():
-#     global switch, camera, selectcamera
-#     print(left, " ", right)
-#     if request.method == 'POST':
-#         if request.form.get('stop') == 'Start/Stop':
-#             if(switch == 1):
-#                 switch = 0
-#                 camera.release()
-#                 cv2.destroyAllWindows()
-#             else:
-#                 camera = cv2.VideoCapture(0)
-#                 switch = 1
-#             return redirect(url_for("index"))
-#         elif request.form.get('camera') == 'camera':
-#             if(selectcamera == 1):
-#                 camera = cv2.VideoCapture(selectcamera)
-#                 selectcamera = 0
-#             else:
-#                 camera = cv2.VideoCapture(selectcamera)
-#                 selectcamera = 1
-#             return redirect(url_for("index"))
-#         return redirect(url_for("index"))
 
 @app.route('/')
 def home():
@@ -671,7 +572,3 @@ def login():
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
     app.run(debug=True)
-
-
-# {{ url_for('video_feed') }}
-# {{ url_for('tasks') }}
